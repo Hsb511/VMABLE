@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ble_not_supported">Le BLE n\'est pas supporté</string>
+    <string name="label_data">Données:</string>
+    <string name="label_device_address">Adresse de l\'appareil</string>
+    <string name="label_state">Etat</string>
+    <string name="no_data">Aucune donnée</string>
+    <string name="connected">Connecté</string>
+    <string name="disconnected">Déconnecté</string>
+    <string name="title_devices">Recherche d\'appareil BLE</string>
+    <string name="error_bluetooth_not_supported">le Bluetooth n\'est pas activé</string>
+
+    <!-- Device Control strings -->
+    <string name="unknown_device">Appareil inconnu</string>
+    <string name="unknown_characteristic">Caractéristique inconnue</string>
+    <string name="unknown_service">Service inconnu</string>
+
+    <!-- Menu items -->
+    <string name="menu_connect">Connecter</string>
+    <string name="menu_disconnect">Déconnecter</string>
+    <string name="menu_scan">Scanner</string>
+    <string name="menu_stop">Arrêter</string>
+
+    <!-- Main Activity -->
+    <string name="scan_activity_button">Faire une recherche des bracelets connecté</string>
+    <string name="direct_course_button">Lancer une course avec les dispositifs déjà enregistrés</string>
+    <string name="offline_course_button">Lancer une course avec chronométrage manuel</string>
+
+    <!-- Offline Activity -->
+    <string name="start_course_button">Démarrer pour tous</string>
+    <string name="input_runner">Nom du coureur</string>
+    <string name="race">Course</string>
+    <string name="send_results_button">Envoyer les résultats</string>
+    <string name="missing_name">Un ou plusieurs nom de coureurs sont invalides</string>
+
+    <!-- SendResults Activity -->
+    <string name="send_mode">Mode d\'envoi</string>
+    <string name="by_mail">par mail au format csv</string>
+    <string name="by_bluetooth">par bluetooth via ordinateur</string>
+    <string name="email_to_send">Email à envoyer</string>
+    <string name="send_button">Envoyer</string>
+    <string name="search_computer">Rechercher ordinateur</string>
+    <string name="computer_name">Nom de l\'ordinateur</string>
+    <string name="incorrect_address">l\'adresse mail entrée est incorrecte</string>
+    <string name="email_subject">mes tests de VMA</string>
+</resources>
