@@ -53,14 +53,14 @@ public class DeviceScanActivity extends ListActivity {
     private boolean mScanning;
     private Handler mHandler;
     private static final int REQUEST_ENABLE_BT = 1;
-    // Stops scanning after 100 seconds.
-    private static final long SCAN_PERIOD = 1000000;
+    // Stops scanning after 10 seconds.
+    private static final long SCAN_PERIOD = 10000;
     private ArrayList<String> mMACaddresses = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         //setTheme(R.style.Theme_AppCompat_Light);
         getActionBar().setTitle(R.string.title_devices);
         mHandler = new Handler();
@@ -157,6 +157,7 @@ public class DeviceScanActivity extends ListActivity {
         final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
         if (device == null) return;
 
+
         /*
         LinearLayout ll = (LinearLayout) v;
         TextView deviceNameTV = (TextView) ll.getChildAt(0);
@@ -168,13 +169,13 @@ public class DeviceScanActivity extends ListActivity {
         } else {
             mMACaddresses.add(macAddress);
             ll.setBackgroundColor(getResources().getColor(R.color.nice_green));
-        }*/
-
+        }
+        */
         //TODO C'est pas un todo, c'est juste pour me rappeler de ce qu'il faisait avant
 
-        final Intent intent = new Intent(this, DeviceControlActivity.class);
-        intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.getName());
-        intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+        final Intent intent = new Intent(this, DeviceCheckActivity.class);
+        intent.putExtra(DeviceCheckActivity.EXTRAS_DEVICE_NAME, device.getName());
+        intent.putExtra(DeviceCheckActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
         if (mScanning) {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
             mScanning = false;
@@ -195,7 +196,7 @@ public class DeviceScanActivity extends ListActivity {
             }, SCAN_PERIOD);
 
             mScanning = true;
-                mBluetoothAdapter.startLeScan(mLeScanCallback);
+            mBluetoothAdapter.startLeScan(mLeScanCallback);
 
         } else {
             mScanning = false;
@@ -279,7 +280,10 @@ public class DeviceScanActivity extends ListActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (false) { //mMACaddresses.contains(device.getAddress())) {
+                    /* TODO C'est moi qui ait fait cette m****
+                    Log.i("device!", device.getAddress());
+                    Log.i("device!", device.getName());
+                    if (device.getAddress().equals("D2:35:51:EB:E6:A2")) { //mMACaddresses.contains(device.getAddress())) {
                         final Intent intent = new Intent(DeviceScanActivity.this, DeviceControlActivity.class);
                         intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.getName());
                         intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
@@ -289,7 +293,10 @@ public class DeviceScanActivity extends ListActivity {
                     } else {
                         mLeDeviceListAdapter.addDevice(device);
                         mLeDeviceListAdapter.notifyDataSetChanged();
-                    }
+                    } */
+
+                    mLeDeviceListAdapter.addDevice(device);
+                    mLeDeviceListAdapter.notifyDataSetChanged();
                 }
             });
         }

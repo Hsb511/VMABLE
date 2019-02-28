@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
         findViewById(R.id.row_course_activity_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, DeviceScanActivity.class);
+                Intent intent = new Intent(MainActivity.this, ShowSavedDevicesActivity.class);
                 startActivity(intent);
             }
         });

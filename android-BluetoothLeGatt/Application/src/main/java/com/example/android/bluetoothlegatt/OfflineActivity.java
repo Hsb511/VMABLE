@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.media.MediaCodec;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.regex.Pattern;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -263,7 +265,7 @@ public class OfflineActivity extends Activity {
      */
     protected LinearLayout createNewRace(String time, LinearLayout parentLayout, LinearLayout.LayoutParams params) {
         LinearLayout raceLayout = new LinearLayout(getApplicationContext());
-        int ind = findRaceNumber(parentLayout);
+        int ind = findRaceNumber(parentLayout) + 1;
         raceLayout.addView(createRaceTextView(ind));
         raceLayout.addView(createTimerTextView(params, time));
         raceLayout.addView(createDeleteRaceButton());
@@ -362,23 +364,28 @@ public class OfflineActivity extends Activity {
         ArrayList<String> names = new ArrayList<>();
         for (int i = 0; i < timerLayout.getChildCount(); i++) {
             if (timerLayout.getChildAt(i) instanceof LinearLayout) {
-                Log.i("name", "RaceLayout");
                 LinearLayout childLayout = (LinearLayout) timerLayout.getChildAt(i);
                 TextView nameTextView = (TextView) childLayout.getChildAt(0);
-
                 String name = nameTextView.getText().toString();
-                names.add(name);
-                Log.i("name", name);
-                ArrayList<String> races = new ArrayList<>();
-                for (int j = 2; j < childLayout.getChildCount(); j++) {
-                    LinearLayout raceLayout = (LinearLayout)childLayout.getChildAt(j);
-                    if (raceLayout.getVisibility() == View.VISIBLE) {
-                        TextView timeTextView = (TextView) raceLayout.getChildAt(1);
-                        races.add(timeTextView.getText().toString());
+                Log.i("samere", name + " : " + String.valueOf(Pattern.matches("^[a-zA-Z ]$", name)));
+                if (Pattern.matches("^[a-zA-Zéèëàùöôê]+[a-zA-Zéèëàùöôê ]*$", name)) {
+                    names.add(name);
+                    Log.i("name", name);
+                    ArrayList<String> races = new ArrayList<>();
+                    for (int j = 2; j < childLayout.getChildCount(); j++) {
+                        LinearLayout raceLayout = (LinearLayout)childLayout.getChildAt(j);
+                        if (raceLayout.getVisibility() == View.VISIBLE) {
+                            TextView timeTextView = (TextView) raceLayout.getChildAt(1);
+                            races.add(timeTextView.getText().toString());
+                        }
                     }
+
+                    intent.putStringArrayListExtra(name, races);
+                } else {
+                    error = true;
                 }
 
-                intent.putStringArrayListExtra(name, races);
+
 
             }
             intent.putStringArrayListExtra("names", names);

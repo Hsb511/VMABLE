@@ -43,4 +43,14 @@
     <string name="computer_name">Nom de l\'ordinateur</string>
     <string name="incorrect_address">l\'adresse mail entrée est incorrecte</string>
     <string name="email_subject">mes tests de VMA</string>
+
+    <!-- DeviceCheck Activity -->
+    <string name="runner_name">Nom du coureur</string>
+    <string name="add_device">Ajouter cet appareil \n à la course</string>
+    <string name="back_to_scan">Ne pas ajouter \n cet appareil</string>
+
+    <!-- ShowDevice Activity -->
+    <string name="address">Adresse MAC</string>
+    <string name="saved_devices">Sélectionner les dispositifs pour la course</string>
+    <string name="start_race">Démarrer la course</string>
 </resources>

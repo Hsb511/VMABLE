@@ -56,4 +56,14 @@
     <string name="computer_name">Computer\'s name</string>
     <string name="incorrect_address">the mail address is incorrect</string>
     <string name="email_subject">my VMA tests</string>
+
+    <!-- DeviceCheck Activity -->
+    <string name="runner_name">Runner\'s name</string>
+    <string name="add_device">Add this device</string>
+    <string name="back_to_scan">Don\'t add this device</string>
+
+    <!-- ShowDevice Activity -->
+    <string name="address">Address</string>
+    <string name="saved_devices">Check the saved devices that you want to run with</string>
+    <string name="start_race">Start the race</string>
 </resources>

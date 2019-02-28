@@ -40,30 +40,36 @@ public class SendResultsActivity extends Activity {
     ArrayList<String> times = new ArrayList<>();
     int maxRaces = 0;
     Bundle bundle;
+    String content = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bundle = getIntent().getExtras();
-        path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        path = Environment.getExternalStoragePublicDirectory("/Document");
         file = new File(path, "data.csv");
-        if(!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                Log.i("name", e.toString());
-            }
-
+        if(file.exists()) {
+            file.delete();
         }
+
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            Log.i("name", e.toString());
+        }
+
         setContentView(R.layout.activity_send_results);
         recapLayout = findViewById(R.id.recap_layout);
         showRecap();
         writeOnCsv();
 
+
         findViewById(R.id.send_email_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, content);
                 emailIntent.setType("*/*");
                 EditText nameView = findViewById(R.id.name_edit_text);
                 String error = "";
@@ -82,9 +88,14 @@ public class SendResultsActivity extends Activity {
                     String to[] = {mail};
                     emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
                     Uri csvUri = getUriDataCsv();
-                    emailIntent.putExtra(Intent.EXTRA_STREAM, csvUri);
+
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.email_subject));
-                    startActivity(createEmailOnlyChooserIntent(emailIntent, "Send email..."));
+
+                    /* emailIntent.putExtra(Intent.EXTRA_STREAM, csvUri);
+                    startActivity(createEmailOnlyChooserIntent(emailIntent, "Send email...")); */
+
+                    //emailIntent.putExtra(Intent.EXTRA_STREAM, csvUri);
+                    startActivity(emailIntent);
                 } else {
                     Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG);
                 }
@@ -154,6 +165,7 @@ public class SendResultsActivity extends Activity {
         try {
             writer = new FileWriter(file);
             writer.write(getFirstRow());
+            content += getFirstRow();
             for (int j = 0; j < names.size(); j++) {
                 String name = names.get(j);
                 String rowRunner = name + ",";
@@ -170,6 +182,7 @@ public class SendResultsActivity extends Activity {
 
                 }
                 writer.write(rowRunner);
+                content += rowRunner;
             }
 
             writer.flush();
@@ -196,7 +209,7 @@ public class SendResultsActivity extends Activity {
         Uri uri;
         if (Build.VERSION.SDK_INT > 23) {
             uri = FileProvider.getUriForFile(
-                SendResultsActivity.this,
+                getApplicationContext(),
                 "com.example.android.bluetoothlegatt.provider",
                 file
             );
