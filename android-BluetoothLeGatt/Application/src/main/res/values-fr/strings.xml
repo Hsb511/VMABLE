@@ -48,6 +48,7 @@
     <string name="runner_name">Nom du coureur</string>
     <string name="add_device">Ajouter cet appareil \n à la course</string>
     <string name="back_to_scan">Ne pas ajouter \n cet appareil</string>
+    <string name="update_runner">Modifier le nom du coureur</string>
 
     <!-- ShowDevice Activity -->
     <string name="address">Adresse MAC</string>

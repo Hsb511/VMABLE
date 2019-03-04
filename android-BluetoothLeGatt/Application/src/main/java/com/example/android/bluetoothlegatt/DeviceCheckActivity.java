@@ -311,10 +311,28 @@ public class DeviceCheckActivity extends Activity {
 
     protected void initializeDeviceLayout() {
         LinearLayout deviceLayout = findViewById(R.id.device_layout);
-        EditText nameEditText = new EditText(getApplicationContext());
+        final LinearLayout runnersLayout = new LinearLayout(getApplicationContext());
+        runnersLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+        final EditText nameEditText = new EditText(getApplicationContext());
         nameEditText.setHint(getResources().getString(R.string.runner_name));
         nameEditText.setText(mRunnersName);
-        deviceLayout.addView(nameEditText);
+        runnersLayout.addView(nameEditText);
+
+        Button updateNameButton = new Button(getApplicationContext());
+        updateNameButton.setText(getResources().getString(R.string.update_runner));
+        updateNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LinearLayout ll = (LinearLayout) view.getParent();
+                EditText et = (EditText) ll.getChildAt(0);
+                mRunnersName = et.getText().toString();
+            }
+        });
+
+        runnersLayout.addView(updateNameButton);
+
+        deviceLayout.addView(runnersLayout);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
@@ -332,6 +350,7 @@ public class DeviceCheckActivity extends Activity {
             public void onClick(View view) {
                 Intent intent = new Intent(DeviceCheckActivity.this, ShowSavedDevicesActivity.class);
                 intent.putExtra(ShowSavedDevicesActivity.DEVICE_ADDRESS_BACK, mDeviceAddress);
+                intent.putExtra(ShowSavedDevicesActivity.RUNNERS_NAME_BACK, mRunnersName);
                 setResult(ShowSavedDevicesActivity.ADD_DEVICE, intent);
                 Log.i("intent_add", "Intent for adding is set : " + ShowSavedDevicesActivity.DEVICE_ADDRESS_BACK + " : " + mDeviceAddress);
                 finish();
@@ -351,7 +370,8 @@ public class DeviceCheckActivity extends Activity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(DeviceCheckActivity.this, ShowSavedDevicesActivity.class);
-                intent.putExtra(ShowSavedDevicesActivity.DEVICE_ADDRESS_BACK, mDeviceName);
+                intent.putExtra(ShowSavedDevicesActivity.DEVICE_ADDRESS_BACK, mDeviceAddress);
+                intent.putExtra(ShowSavedDevicesActivity.RUNNERS_NAME_BACK, mRunnersName);
                 setResult(ShowSavedDevicesActivity.DONT_ADD_DEVICE, intent);
                 finish();
             }

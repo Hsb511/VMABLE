@@ -61,6 +61,7 @@
     <string name="runner_name">Runner\'s name</string>
     <string name="add_device">Add this device</string>
     <string name="back_to_scan">Don\'t add this device</string>
+    <string name="update_runner">Change the runner\'s name</string>
 
     <!-- ShowDevice Activity -->
     <string name="address">Address</string>

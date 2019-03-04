@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class ShowSavedDevicesActivity extends Activity {
@@ -24,6 +25,7 @@ public class ShowSavedDevicesActivity extends Activity {
     public final static int ADD_DEVICE = 2346;
     public final static int DONT_ADD_DEVICE = 2300;
     public final static String DEVICE_ADDRESS_BACK = "DEVICE_ADDR_BACK";
+    public final static String RUNNERS_NAME_BACK = "RUNNERS_NAME_BACK";
 
     private String mDeviceAddress = "D2:35:51:EB:E6:A2";
     private String mTerraillonAddress = "C4:BE:84:F7:97:E5";
@@ -35,8 +37,11 @@ public class ShowSavedDevicesActivity extends Activity {
         setContentView(R.layout.activity_show_saved_devices);
 
         devicesLayout = findViewById(R.id.device_layout);
+        devicesLayout.removeAllViews();
+        showSavedDevices("", "");
+    }
 
-
+    protected void showSavedDevices(String deviceToUpdate, String nameToUpdate) {
         try {
             SharedPreferences sharedPref = getSharedPreferences("DeviceAddress", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -47,8 +52,17 @@ public class ShowSavedDevicesActivity extends Activity {
 
             for (Map.Entry<String, String> entry : addresses.entrySet())
             {
-                showDevice(entry.getKey(), entry.getValue());
                 Log.i("addresses", entry.getKey() + " : " + entry.getValue());
+                String runnersName = entry.getValue();
+
+
+                if (entry.getKey().equals(deviceToUpdate)) {
+
+                    editor.putString(entry.getKey(), runnersName);
+                    editor.commit();
+                    runnersName = nameToUpdate;
+                }
+                showDevice(entry.getKey(), runnersName);
             }
         } catch (Exception e) {
             Log.i("addresses", "il y a eu une erreur : " + e.toString());
@@ -110,6 +124,7 @@ public class ShowSavedDevicesActivity extends Activity {
         });
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CHECK_DEVICE) {
@@ -120,6 +135,9 @@ public class ShowSavedDevicesActivity extends Activity {
             } else if (resultCode == DONT_ADD_DEVICE) {
                 buttonState.setBackgroundColor(getResources().getColor(R.color.nice_red));
             }
+
+            String runnersName = data.getStringExtra(RUNNERS_NAME_BACK);
+            showDevice(deviceAddress, runnersName);
         }
     }
 
@@ -138,8 +156,11 @@ public class ShowSavedDevicesActivity extends Activity {
     }
 
 
+
+
     protected boolean isInSharedPref(String sharedPrefName) {
         boolean itsin = false;
         return itsin;
     }
+
 }
