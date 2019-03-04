@@ -91,10 +91,7 @@ public class SendResultsActivity extends Activity {
 
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.email_subject));
 
-                    /* emailIntent.putExtra(Intent.EXTRA_STREAM, csvUri);
-                    startActivity(createEmailOnlyChooserIntent(emailIntent, "Send email...")); */
-
-                    //emailIntent.putExtra(Intent.EXTRA_STREAM, csvUri);
+                    emailIntent.putExtra(Intent.EXTRA_STREAM, csvUri);
                     startActivity(emailIntent);
                 } else {
                     Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG);

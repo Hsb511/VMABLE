@@ -26,9 +26,12 @@ public class ShowSavedDevicesActivity extends Activity {
     public final static int DONT_ADD_DEVICE = 2300;
     public final static String DEVICE_ADDRESS_BACK = "DEVICE_ADDR_BACK";
     public final static String RUNNERS_NAME_BACK = "RUNNERS_NAME_BACK";
+    public final static String ADDED_DEVICES_PREF = "ADDED_DEVICES";
+    public final static String NOT_ADDED_DEVICES_PREF = "NOT_ADDED_DEVICES";
 
     private String mDeviceAddress = "D2:35:51:EB:E6:A2";
     private String mTerraillonAddress = "C4:BE:84:F7:97:E5";
+    private String mJulienAddress = "F7:BF:8B:59:98:B9";
     private LinearLayout devicesLayout;
 
     @Override
@@ -36,17 +39,19 @@ public class ShowSavedDevicesActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_saved_devices);
 
-        devicesLayout = findViewById(R.id.device_layout);
+        devicesLayout = findViewById(R.id.deviceLayout);
         devicesLayout.removeAllViews();
         showSavedDevices("", "");
     }
 
     protected void showSavedDevices(String deviceToUpdate, String nameToUpdate) {
+        devicesLayout.removeAllViews();
         try {
             SharedPreferences sharedPref = getSharedPreferences("DeviceAddress", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(mDeviceAddress, "Emmanuel");
             editor.putString(mTerraillonAddress, "Yohann");
+            editor.putString(mJulienAddress, "Julien");
             editor.commit();
             Map<String, String> addresses = (Map<String, String>) sharedPref.getAll();
 
@@ -57,10 +62,10 @@ public class ShowSavedDevicesActivity extends Activity {
 
 
                 if (entry.getKey().equals(deviceToUpdate)) {
-
+                    runnersName = nameToUpdate;
                     editor.putString(entry.getKey(), runnersName);
                     editor.commit();
-                    runnersName = nameToUpdate;
+
                 }
                 showDevice(entry.getKey(), runnersName);
             }
@@ -102,6 +107,11 @@ public class ShowSavedDevicesActivity extends Activity {
                 startActivityForResult(intent, CHECK_DEVICE);
             }
         });
+        if (isInSharedPref(ADDED_DEVICES_PREF, deviceAddress)) {
+            addButton.setBackgroundColor(getResources().getColor(R.color.nice_green));
+        } else if (isInSharedPref(NOT_ADDED_DEVICES_PREF, deviceAddress)) {
+            addButton.setBackgroundColor(getResources().getColor(R.color.nice_red));
+        }
         deviceLayout.addView(addButton);
         devicesLayout.addView(deviceLayout);
 
@@ -129,15 +139,27 @@ public class ShowSavedDevicesActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CHECK_DEVICE) {
             String deviceAddress = data.getStringExtra(DEVICE_ADDRESS_BACK);
-            Button buttonState = getStateButtonByAddress(deviceAddress);
-            if (resultCode == ADD_DEVICE) {
-                buttonState.setBackgroundColor(getResources().getColor(R.color.nice_green));
-            } else if (resultCode == DONT_ADD_DEVICE) {
-                buttonState.setBackgroundColor(getResources().getColor(R.color.nice_red));
-            }
-
             String runnersName = data.getStringExtra(RUNNERS_NAME_BACK);
-            showDevice(deviceAddress, runnersName);
+            if (resultCode == ADD_DEVICE) {
+                SharedPreferences sharedPrefA = getSharedPreferences(ADDED_DEVICES_PREF, MODE_PRIVATE);
+                SharedPreferences.Editor editorA = sharedPrefA.edit();
+                editorA.putString(deviceAddress, runnersName);
+                editorA.commit();
+                if (isInSharedPref(NOT_ADDED_DEVICES_PREF, deviceAddress)) {
+                    removeFromPref(NOT_ADDED_DEVICES_PREF, deviceAddress);
+                }
+
+            } else if (resultCode == DONT_ADD_DEVICE) {
+                SharedPreferences sharedPrefN = getSharedPreferences(NOT_ADDED_DEVICES_PREF, MODE_PRIVATE);
+                SharedPreferences.Editor editorN = sharedPrefN.edit();
+                editorN.putString(deviceAddress, runnersName);
+                editorN.commit();
+                if (isInSharedPref(ADDED_DEVICES_PREF, deviceAddress)) {
+                    removeFromPref(ADDED_DEVICES_PREF, deviceAddress);
+                }
+            }
+            showSavedDevices(deviceAddress, runnersName);
+
         }
     }
 
@@ -156,11 +178,22 @@ public class ShowSavedDevicesActivity extends Activity {
     }
 
 
-
-
-    protected boolean isInSharedPref(String sharedPrefName) {
+    protected boolean isInSharedPref(String sharedPrefName, String deviceAddress) {
         boolean itsin = false;
+        SharedPreferences sharedPref = getSharedPreferences(sharedPrefName, MODE_PRIVATE);
+        Map<String, String> addresses = (Map<String, String>) sharedPref.getAll();
+        for (Map.Entry<String, String> entry : addresses.entrySet())
+        {
+            if (entry.getKey().equals(deviceAddress)) itsin = true;
+        }
         return itsin;
+    }
+
+    protected void removeFromPref(String sharedPrefName, String deviceAddress) {
+        SharedPreferences sharedPref = getSharedPreferences(sharedPrefName, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove(deviceAddress);
+        editor.commit();
     }
 
 }

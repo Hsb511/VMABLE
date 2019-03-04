@@ -173,7 +173,7 @@ public class DeviceScanActivity extends ListActivity {
         */
         //TODO C'est pas un todo, c'est juste pour me rappeler de ce qu'il faisait avant
 
-        final Intent intent = new Intent(this, DeviceCheckActivity.class);
+        final Intent intent = new Intent(this, DeviceControlActivity.class);
         intent.putExtra(DeviceCheckActivity.EXTRAS_DEVICE_NAME, device.getName());
         intent.putExtra(DeviceCheckActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
         if (mScanning) {
