@@ -35,12 +35,14 @@ public class DeviceCheckActivity extends Activity {
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    public static final String EXTRAS_RUNNERS_NAME = "RUNNERS_NAME";
 
     private TextView mConnectionState;
     private TextView mDataField;
     private String mDeviceName;
     private String mDeviceAddress = "D2:35:51:EB:E6:A2";
     private String mTerraillonAddress = "C4:BE:84:F7:97:E5";
+    private String mRunnersName;
     private ExpandableListView mGattServicesList;
     private BluetoothLeService mBluetoothLeService;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
@@ -93,7 +95,7 @@ public class DeviceCheckActivity extends Activity {
                 clearUI();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
-                //displayGattServices(mBluetoothLeService.getSupportedGattServices());
+                displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
                 Log.i("test", "data : " + data);
@@ -147,7 +149,10 @@ public class DeviceCheckActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gatt_services_characteristics);
 
-
+        final Intent intent = getIntent();
+        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+        mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        mRunnersName = intent.getStringExtra(EXTRAS_RUNNERS_NAME);
 
         // Sets up UI references.
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
@@ -232,6 +237,68 @@ public class DeviceCheckActivity extends Activity {
         }
     }
 
+    // Demonstrates how to iterate through the supported GATT Services/Characteristics.
+    // In this sample, we populate the data structure that is bound to the ExpandableListView
+    // on the UI.
+    private void displayGattServices(List<BluetoothGattService> gattServices) {
+        if (gattServices == null) return;
+        String uuid = null;
+        String unknownServiceString = getResources().getString(R.string.unknown_service);
+        String unknownCharaString = getResources().getString(R.string.unknown_characteristic);
+        ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<HashMap<String, String>>();
+        ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
+                = new ArrayList<ArrayList<HashMap<String, String>>>();
+        mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
+
+        // Loops through available GATT Services.
+        for (BluetoothGattService gattService : gattServices) {
+            HashMap<String, String> currentServiceData = new HashMap<String, String>();
+            uuid = gattService.getUuid().toString();
+
+            currentServiceData.put(
+                    LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
+            currentServiceData.put(LIST_UUID, uuid);
+            gattServiceData.add(currentServiceData);
+
+            ArrayList<HashMap<String, String>> gattCharacteristicGroupData =
+                    new ArrayList<HashMap<String, String>>();
+            List<BluetoothGattCharacteristic> gattCharacteristics =
+                    gattService.getCharacteristics();
+            ArrayList<BluetoothGattCharacteristic> charas =
+                    new ArrayList<BluetoothGattCharacteristic>();
+
+            // Loops through available Characteristics.
+            for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
+                charas.add(gattCharacteristic);
+                Log.i("test", "charas : " + gattCharacteristic);
+
+                HashMap<String, String> currentCharaData = new HashMap<String, String>();
+                uuid = gattCharacteristic.getUuid().toString();
+                String data_name = SampleGattAttributes.lookup(uuid, unknownCharaString);
+                Log.i("test", "data-name : " + data_name);
+                Log.i("test", "data-uuid : " + uuid);
+                currentCharaData.put(LIST_NAME, data_name);
+                currentCharaData.put(LIST_UUID, uuid);
+                gattCharacteristicGroupData.add(currentCharaData);
+            }
+            mGattCharacteristics.add(charas);
+            gattCharacteristicData.add(gattCharacteristicGroupData);
+        }
+
+        SimpleExpandableListAdapter gattServiceAdapter = new SimpleExpandableListAdapter(
+                this,
+                gattServiceData,
+                android.R.layout.simple_expandable_list_item_2,
+                new String[] {LIST_NAME, LIST_UUID},
+                new int[] { android.R.id.text1, android.R.id.text2 },
+                gattCharacteristicData,
+                android.R.layout.simple_expandable_list_item_2,
+                new String[] {LIST_NAME, LIST_UUID},
+                new int[] { android.R.id.text1, android.R.id.text2 }
+        );
+        mGattServicesList.setAdapter(gattServiceAdapter);
+    }
+
 
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
@@ -246,7 +313,7 @@ public class DeviceCheckActivity extends Activity {
         LinearLayout deviceLayout = findViewById(R.id.device_layout);
         EditText nameEditText = new EditText(getApplicationContext());
         nameEditText.setHint(getResources().getString(R.string.runner_name));
-
+        nameEditText.setText(mRunnersName);
         deviceLayout.addView(nameEditText);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -263,7 +330,11 @@ public class DeviceCheckActivity extends Activity {
         addDeviceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(DeviceCheckActivity.this, ShowSavedDevicesActivity.class);
+                intent.putExtra(ShowSavedDevicesActivity.DEVICE_ADDRESS_BACK, mDeviceAddress);
+                setResult(ShowSavedDevicesActivity.ADD_DEVICE, intent);
+                Log.i("intent_add", "Intent for adding is set : " + ShowSavedDevicesActivity.DEVICE_ADDRESS_BACK + " : " + mDeviceAddress);
+                finish();
             }
         });
         addDeviceButton.setLayoutParams(layoutParams);
@@ -275,6 +346,16 @@ public class DeviceCheckActivity extends Activity {
         Button dontAddButton = new Button(getApplicationContext());
         dontAddButton.setText(getResources().getString(R.string.back_to_scan));
         dontAddButton.setLayoutParams(layoutParams);
+        dontAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(DeviceCheckActivity.this, ShowSavedDevicesActivity.class);
+                intent.putExtra(ShowSavedDevicesActivity.DEVICE_ADDRESS_BACK, mDeviceName);
+                setResult(ShowSavedDevicesActivity.DONT_ADD_DEVICE, intent);
+                finish();
+            }
+        });
         buttonsLayout.addView(dontAddButton);
 
         deviceLayout.addView(buttonsLayout);
