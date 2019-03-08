@@ -359,6 +359,11 @@ public class OfflineActivity extends Activity {
         return imageButton;
     }
 
+    /**
+     * method triggered when the Button for sending results is pressed.
+     * It will check whether the names matches a certain pattern and add the names and the times in an ArrayList of Strings
+     * @param intent
+     */
     protected void sendResults(Intent intent) {
         boolean error = false;
         ArrayList<String> names = new ArrayList<>();

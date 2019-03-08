@@ -100,11 +100,15 @@ public class ShowSavedDevicesActivity extends Activity {
                 BluetoothAdapter mBluetoothAdapter = bluetoothManager.getAdapter();
 
                 BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(deviceAddress);
-                final Intent intent = new Intent(ShowSavedDevicesActivity.this, DeviceCheckActivity.class);
+                Intent intent = new Intent(ShowSavedDevicesActivity.this, DeviceCheckActivity.class);
+                if (getIntent().getStringExtra("Activity").equals("Scan")) {
+                    intent = new Intent(ShowSavedDevicesActivity.this, DeviceControlActivity.class);
+                }
                 intent.putExtra(DeviceCheckActivity.EXTRAS_DEVICE_NAME, device.getName());
                 intent.putExtra(DeviceCheckActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
                 intent.putExtra(DeviceCheckActivity.EXTRAS_RUNNERS_NAME, runnersName);
-                startActivityForResult(intent, CHECK_DEVICE);
+                //startActivityForResult(intent, CHECK_DEVICE);
+                startActivity(intent);
             }
         });
         if (isInSharedPref(ADDED_DEVICES_PREF, deviceAddress)) {
@@ -137,14 +141,19 @@ public class ShowSavedDevicesActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("testD", "onActivityResult");
         if (requestCode == CHECK_DEVICE) {
             String deviceAddress = data.getStringExtra(DEVICE_ADDRESS_BACK);
+            Log.i("testD", "get device address : " + deviceAddress);
             String runnersName = data.getStringExtra(RUNNERS_NAME_BACK);
+            Log.i("testD", "get new Runner's name : " + runnersName);
             if (resultCode == ADD_DEVICE) {
                 SharedPreferences sharedPrefA = getSharedPreferences(ADDED_DEVICES_PREF, MODE_PRIVATE);
                 SharedPreferences.Editor editorA = sharedPrefA.edit();
                 editorA.putString(deviceAddress, runnersName);
                 editorA.commit();
+                Log.i("testD", sharedPrefA.getAll().toString());
+                Log.i("testD", "is in deleted device : " + String.valueOf(isInSharedPref(NOT_ADDED_DEVICES_PREF, deviceAddress)));
                 if (isInSharedPref(NOT_ADDED_DEVICES_PREF, deviceAddress)) {
                     removeFromPref(NOT_ADDED_DEVICES_PREF, deviceAddress);
                 }
@@ -154,6 +163,8 @@ public class ShowSavedDevicesActivity extends Activity {
                 SharedPreferences.Editor editorN = sharedPrefN.edit();
                 editorN.putString(deviceAddress, runnersName);
                 editorN.commit();
+                Log.i("testD", sharedPrefN.getAll().toString());
+                Log.i("testD", "is in added device : " + String.valueOf(isInSharedPref(ADDED_DEVICES_PREF, deviceAddress)));
                 if (isInSharedPref(ADDED_DEVICES_PREF, deviceAddress)) {
                     removeFromPref(ADDED_DEVICES_PREF, deviceAddress);
                 }

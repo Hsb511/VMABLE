@@ -73,7 +73,8 @@
         </provider>
 
         <activity android:name=".DeviceCheckActivity" />
-        <activity android:name=".ShowSavedDevicesActivity"></activity>
+        <activity android:name=".ShowSavedDevicesActivity" />
+        <activity android:name=".RaceActivity"></activity>
     </application>
 
 </manifest>

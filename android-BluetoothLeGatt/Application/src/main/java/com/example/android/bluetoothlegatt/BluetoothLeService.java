@@ -67,7 +67,7 @@ public class BluetoothLeService extends Service {
     public final static String EXTRA_DATA =
             "com.example.bluetooth.le.EXTRA_DATA";
     public final static String ACTION_GATT_FIRST_CONNECTED = "ACTION_GATT_FIRST_CONNECTED";
-
+    public static String TIME_CHARA = "00002a00-0000-1000-8000-00805f9b34fb";
 
     public final static UUID UUID_HEART_RATE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
@@ -179,12 +179,22 @@ public class BluetoothLeService extends Service {
                     }
                 }
 
-                /*
-                Log.i("test", "set time : " + strDate + " ; in hex : " + hexDate);
+
                 byte[] newData = hexStringToByteArray(hexDate);
-                Log.i("test", "setValue() : " + "23 : " +  String.valueOf(characteristic.setValue(newData)));
-                Log.i("test", "WriteCharacteristic() : " +  String.valueOf(mBluetoothGatt.writeCharacteristic(characteristic)));
-                */
+
+
+
+                Log.i("testC", "set time : " + strDate + " ; in hex : " + hexDate);
+                Log.i("testC", "chara properties : " + characteristic.getProperties() + " ; READ + 2, WRITE = 8, NOTIFY = 10...");
+                Log.i("testC", "chara uuid : " + characteristic.getUuid());
+
+                //TODO FAIRE EN SORTE QUE LA COMPARAISON SOIT DYNAMIQUE IE, TROUVER UNE CHARACTERISTIQUE SUR LAQUELLE ON PEUT ECRIRE (characteristic.getProperties() = 8 ou 18 ou 28)
+                //TODO ENREGISTRER CETTE VALEUR LORS DE LA PREMIERE ECRITURE POUR NE POUVOIR ECRiRE QUE SUR CETTE CARACTERISTIQUE
+                if (characteristic.getUuid().toString().equals(TIME_CHARA)) {
+                    Log.i("testC", "setValue() : " + "23 : " +  String.valueOf(characteristic.setValue(newData)));
+                    Log.i("testC", "WriteCharacteristic() : " +  String.valueOf(mBluetoothGatt.writeCharacteristic(characteristic)));
+                }
+
                 intent.putExtra(EXTRA_DATA, dataString + "\n" + stringBuilder.toString());
             }
         }
