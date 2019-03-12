@@ -42,6 +42,15 @@ public class ShowSavedDevicesActivity extends Activity {
         devicesLayout = findViewById(R.id.deviceLayout);
         devicesLayout.removeAllViews();
         showSavedDevices("", "");
+
+        // Button to start the race
+        findViewById(R.id.startRaceButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent raceIntent = new Intent(ShowSavedDevicesActivity.this, RaceActivity.class);
+                startActivity(raceIntent);
+            }
+        });
     }
 
     protected void showSavedDevices(String deviceToUpdate, String nameToUpdate) {
@@ -107,8 +116,8 @@ public class ShowSavedDevicesActivity extends Activity {
                 intent.putExtra(DeviceCheckActivity.EXTRAS_DEVICE_NAME, device.getName());
                 intent.putExtra(DeviceCheckActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
                 intent.putExtra(DeviceCheckActivity.EXTRAS_RUNNERS_NAME, runnersName);
-                //startActivityForResult(intent, CHECK_DEVICE);
-                startActivity(intent);
+                startActivityForResult(intent, CHECK_DEVICE);
+                //startActivity(intent);
             }
         });
         if (isInSharedPref(ADDED_DEVICES_PREF, deviceAddress)) {

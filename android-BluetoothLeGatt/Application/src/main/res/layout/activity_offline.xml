@@ -43,22 +43,24 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@id/send_results_button"
+        app:layout_constraintBottom_toTopOf="@id/send_results_button_r"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/start_everyone_button"
+        app:layout_constraintTop_toBottomOf="@id/start_everyone_button_r"
         app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:id="@+id/main_timer_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="visible">
 
                 <ImageButton
                     android:id="@+id/add_runner_button"

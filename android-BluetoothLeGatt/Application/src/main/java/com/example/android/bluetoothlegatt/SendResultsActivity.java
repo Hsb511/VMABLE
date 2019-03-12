@@ -94,7 +94,7 @@ public class SendResultsActivity extends Activity {
                     emailIntent.putExtra(Intent.EXTRA_STREAM, csvUri);
                     startActivity(emailIntent);
                 } else {
-                    Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG);
+                    Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
                 }
             }
         });
